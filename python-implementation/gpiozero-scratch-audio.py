@@ -1,4 +1,4 @@
-from gpiozero import Buttons,LED
+from gpiozero import Button,LED
 import wave
 import time
 import sys

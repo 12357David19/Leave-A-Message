@@ -1,4 +1,4 @@
-from gpiozero import Buttons,LED
+from gpiozero import Button,LED
 
 
 def on():
