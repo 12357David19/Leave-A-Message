@@ -18,9 +18,9 @@ def main():
 
     btn = Button(4)
 
-    btn.when_pressed = pressed
-    btn.when_released = released
-    print("Hello World!")
-
+    btn.when_pressed = on
+    btn.when_released = off
+    while True:
+        pass
 if __name__ == "__main__":
     main()
