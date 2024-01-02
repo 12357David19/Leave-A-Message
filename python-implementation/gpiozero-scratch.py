@@ -1,23 +1,22 @@
 from gpiozero import Button,LED
 
 
-def on():
-    led = LED(2)
-    led.on()
-    print("switch is on!")
 
-def off():
-    led = LED(2)
-    led.off()
-    print("switch is off")
 
 
 def main():
     
 
 
-    btn = Button(4)
+    btn = Button(4,bounce_time=.01)
+    led = LED(21)
+    def on(button):
+        led.on()
+        print("switch is on!")
 
+    def off(button):
+        led.off()
+        print("switch is off\n")
     btn.when_pressed = on
     btn.when_released = off
     while True:

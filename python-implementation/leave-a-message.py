@@ -1,3 +1,4 @@
+from pathlib import Path
 from gpiozero import Button,LED
 import wave
 import time
@@ -6,16 +7,20 @@ import pyaudio
 import threading
 import multiprocessing
 import signal
-import faulthandler
 
-# Enable faulthandler
-faulthandler.enable()
 
 # record_audio_flag = True
 # lock = threading.Lock()
 record_audio_flag = multiprocessing.Value('b', False)
 recording_thread = None
 led = LED(21)
+def signal_handler(sig, frame):
+    global led
+    print(f"Received signal {sig}. Exiting.")
+    led.off()
+    exit(1)
+# Register the signal handler for Ctrl+C
+signal.signal(signal.SIGINT, signal_handler)
 
 def on():
     global record_audio_flag
@@ -31,7 +36,7 @@ def record_audio():
     with record_audio_flag.get_lock():
         record_audio_flag.value = True 
     FORMAT = pyaudio.paInt16
-    CHANNELS = 1
+    CHANNELS = 2
     RATE = 44100
     CHUNK = 1024
     # RECORD_SECONDS = 10
@@ -40,10 +45,15 @@ def record_audio():
     print(f"Audio is being recorded to:{recording_filename}")
     
     audio = pyaudio.PyAudio()
-    
+    device_count = audio.get_device_count()
+    for i in range(0, device_count):
+        info = audio.get_device_info_by_index(i)
+        print("Device {} = {}".format(info["index"], info["name"]))
+
     # start Recording
     stream = audio.open(format=FORMAT, channels=CHANNELS,
                     rate=RATE, input=True,
+                    input_device_index=8,
                     frames_per_buffer=CHUNK)
     print("recording...")
     frames = []
@@ -61,7 +71,8 @@ def record_audio():
     
     # Saving to file
     print(f"Saving to WAV file: {recording_filename}.")
-    with wave.open(recording_filename, 'wb') as wf:
+    recording_path = Path("/home/dav/Documents/coding/python/Leave-A-Message/python-implementation/wavs") / Path(recording_filename)
+    with wave.open(recording_path.as_posix(), 'wb') as wf:
         wf.setnchannels(CHANNELS)
         wf.setsampwidth(audio.get_sample_size(FORMAT))
         wf.setframerate(RATE)

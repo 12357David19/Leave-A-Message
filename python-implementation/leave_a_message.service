@@ -1,0 +1,13 @@
+[Unit]
+Description=Leave a Message App
+After=network.target
+
+[Service]
+ExecStart=/home/dav/Documents/coding/python/Leave-A-Message/python-implementation/start_leave_a_message_service.sh
+WorkingDirectory=/home/dav/Documents/coding/python/Leave-A-Message/python-implementation/
+Restart=always
+User=dav
+Group=dav
+
+[Install]
+WantedBy=default.target
