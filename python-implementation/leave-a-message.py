@@ -1,3 +1,4 @@
+from pathlib import Path
 from gpiozero import Button,LED
 import time
 import multiprocessing
@@ -40,6 +41,8 @@ def off():
 
 def main():
     print(f"Starting software")
+    wav_folder = Path(os.path.abspath(__file__)) / "wavs"
+    wav_folder.mkdir(exist_ok=True)
     btn = Button(4,pull_up=True)
 
     btn.when_pressed = on
